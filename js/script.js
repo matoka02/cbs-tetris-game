@@ -1,15 +1,48 @@
 const PLAYFILED_COLUMNS = 10;
 const PLAYFILED_ROWS = 20;
 let playfield;
+const tetrominoSequence = [];
 
-const TETROMINO_NAMES = [
-  'O',
-  'L',
-];
+const TETROMINO_NAMES = ['O', 'L', 'I', 'J', 'P', 'Q', 'S', 'Z', 'T'];
 
 const TETROMINOES = {
   'O': [[1]],
   'L': [[1]],
+  'I': [
+    [0, 0, 0, 0],
+    [1, 1, 1, 1],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0]
+  ],
+  'J': [
+    [1, 0, 0],
+    [1, 1, 1],
+    [0, 0, 0],
+  ],
+  'P': [
+    [0, 0, 1],
+    [1, 1, 1],
+    [0, 0, 0],
+  ],
+  'Q': [
+    [1, 1],
+    [1, 1],
+  ],
+  'S': [
+    [0, 1, 1],
+    [1, 1, 0],
+    [0, 0, 0],
+  ],
+  'Z': [
+    [1, 1, 0],
+    [0, 1, 1],
+    [0, 0, 0],
+  ],
+  'T': [
+    [0, 1, 0],
+    [1, 1, 1],
+    [0, 0, 0],
+  ]
 };
 
 let tetromino = {
@@ -18,6 +51,16 @@ let tetromino = {
   column: 0,
   row: 0
 };
+
+function generateSequence() {
+  const sequence = ['O', 'L', 'I', 'J', 'P', 'Q', 'S', 'Z', 'T'];
+
+  while (sequence.length) {
+    const rand = Math.floor(Math.random() * sequence.length);
+    const name = sequence.splice(rand, 1)[0];
+    tetrominoSequence.push(name);
+  }
+}
 
 
 function generateTetromino() {
