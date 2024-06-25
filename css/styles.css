@@ -12,10 +12,6 @@ body {
   background: linear-gradient(90deg, #1a1b26, #24283b);
 }
 
-.game{
-  margin: auto auto;
-}
-
 .tetris{
   border: 5px solid #414868;
 
