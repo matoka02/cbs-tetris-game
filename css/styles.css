@@ -12,6 +12,10 @@ body {
   background: linear-gradient(90deg, #1a1b26, #24283b);
 }
 
+.game{
+  margin: auto auto;
+}
+
 .tetris{
   border: 5px solid #414868;
 
@@ -33,4 +37,12 @@ body {
 
 .tetris .L{
   background-color: #f5df4d;
+}
+
+.tetris .M{
+  background-color: #fa7268;
+}
+
+.tetris .N{
+  background-color: #e47b12;
 }
