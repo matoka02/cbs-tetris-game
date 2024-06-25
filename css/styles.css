@@ -1,0 +1,40 @@
+* {
+  margin: 0;
+}
+
+body {
+  height: 100vh;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background: linear-gradient(90deg, #1a1b26, #24283b);
+}
+
+.game{
+  margin: auto auto;
+}
+
+.tetris{
+  border: 5px solid #414868;
+
+  display: grid;
+  grid-template-columns: repeat(10, auto);
+}
+
+.tetris div{
+  height: min(4vh, 7vw);
+  width: min(4vh, 7vw);
+  box-shadow: inset 2px 2px 2px #0f0f14, inset -2px -2px 2px #343b58;
+
+  background: #d3d3d366;
+}
+
+.tetris .O{
+  background-color: #7575ff;
+}
+
+.tetris .L{
+  background-color: #f5df4d;
+}
