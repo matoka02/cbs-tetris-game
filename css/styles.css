@@ -31,18 +31,30 @@ body {
   background: #d3d3d366;
 }
 
+/* Pantone 2022 */
 .tetris .O{
   background-color: #7575ff;
 }
-
+/* Pantone 2021 */
 .tetris .L{
   background-color: #f5df4d;
 }
-
-.tetris .M{
+.tetris .J{
   background-color: #fa7268;
 }
-
-.tetris .N{
+/* Pantone 2018 */
+.tetris .S{
   background-color: #e47b12;
+}
+/* Pantone 2017 */
+.tetris .Z{
+  background-color: #88b04b;
+}
+/* Pantone 2016 */
+.tetris .I{
+  background-color: #92a8d1;
+}
+/* Pantone 2015 */
+.tetris .T{
+  background-color: #b163a3;
 }
