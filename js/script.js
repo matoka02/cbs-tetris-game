@@ -135,7 +135,7 @@ function onRestart(evt) {
 document.addEventListener('keydown', onKeyDown);
 
 function onKeyDown(evt) {
-  console.log(evt.keyCode);
+  // console.log(evt.keyCode);
   if (evt.key === 'Escape') {
     togglePaused();
   }
@@ -328,6 +328,8 @@ function countScore(destroyRows) {
   if (destroyRows == 4) {
     score += 100;
   }
+
+  scoreElement.innerHTML = score;
 }
 
 function placeTetromino() {
