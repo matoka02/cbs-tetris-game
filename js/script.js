@@ -3,9 +3,9 @@
 const PLAYFILED_COLUMNS = 10;
 const PLAYFILED_ROWS = 20;
 let playfield;
-const tetrominoSequence = [];
+let cells;
 
-const TETROMINO_NAMES = ['O', 'L', 'J', 'S', 'Z', 'I', 'T'];
+const TETROMINO_NAMES = ['O', 'L', 'J', 'S', 'Z', 'I', 'T', 'P', 'R'];
 
 const TETROMINOES = {
   'O': [
@@ -43,6 +43,14 @@ const TETROMINOES = {
     [0, 1, 0],
     [0, 0, 0]
   ],
+  'P': [
+    [0, 1, 0],
+    [1, 1, 1],
+    [0, 1, 0]
+  ],
+  'R': [
+    [1]
+  ],
 };
 
 let tetromino = {
@@ -53,6 +61,14 @@ let tetromino = {
 };
 
 // COMMON
+
+function init() {
+  generatePlayfield();
+  cells = document.querySelectorAll('.tetris div');
+  generateTetromino();
+
+  moveDown();
+}
 
 function convertPositionToIndex(row, column) {
   return row * PLAYFILED_COLUMNS + column;
@@ -70,7 +86,7 @@ function generateTetromino() {
   const matrix = TETROMINOES[nameTetro];
 
   const columnTetro = Math.floor(PLAYFILED_COLUMNS / 2 - matrix.length / 2);
-  const rowTetro = 2;
+  const rowTetro = -2;
 
   tetromino = {
     name: nameTetro,
@@ -200,6 +216,10 @@ function isOutsideOfGameboard(row, column) {
   )
 }
 
+function isOutsideOfTopGameboard(row) {
+  return tetromino.row + row < 0;
+}
+
 function hasCollisions(row, column) {
   return tetromino.matrix[row][column] && (
     playfield[tetromino.row + row]?.[tetromino.column + column]
@@ -215,6 +235,9 @@ function drawTetromino() {
   for (let row = 0; row < tetrominoMatrixSize; row++) {
     for (let column = 0; column < tetrominoMatrixSize; column++) {
 
+      if (isOutsideOfTopGameboard(row)) {
+        continue;
+      }
       if (!tetromino.matrix[row][column]) {
         continue
       };
@@ -257,8 +280,14 @@ function placeTetromino() {
 
 // START
 
-generatePlayfield();
-let cells = document.querySelectorAll('.tetris div')
-generateTetromino();
+function moveDown() {
+  moveTetrominoDown();
+  draw();
+  startLoop();
+}
 
-draw();
+function startLoop() {
+  setTimeout(() => requestAnimationFrame(moveDown), 700)
+}
+
+init();
