@@ -1,9 +1,17 @@
-// FIELD AND FIGURES
+// SCORE, FIELD AND FIGURES
 
 const PLAYFILED_COLUMNS = 10;
 const PLAYFILED_ROWS = 20;
 let playfield;
 let cells;
+
+let isPaused = false;
+let timedId;
+let isGameOver = false;
+let overlay = document.querySelector('.overlay');
+let scoreElement = document.querySelector('.score');
+let btnRestart = document.querySelector('.btn-restart');
+let score = 0;
 
 const TETROMINO_NAMES = ['O', 'L', 'J', 'S', 'Z', 'I', 'T', 'P', 'R'];
 
@@ -63,6 +71,10 @@ let tetromino = {
 // COMMON
 
 function init() {
+  score = 0;
+  scoreElement.innerHTML = 0;
+  isGameOver = false;
+
   generatePlayfield();
   cells = document.querySelectorAll('.tetris div');
   generateTetromino();
@@ -109,23 +121,41 @@ function generatePlayfield() {
   // console.table(playfield);
 };
 
-// KEYBOARD
+// KEYBOARD & CLICKS
+
+btnRestart.addEventListener('click', onRestart);
+
+function onRestart(evt) {
+  document.querySelector('.tetris').innerHTML='';
+  overlay.style.display='none';
+
+  init();
+};
 
 document.addEventListener('keydown', onKeyDown);
 
 function onKeyDown(evt) {
   // console.log(evt.keyCode);
-  if (evt.key == 'ArrowLeft' || evt.keyCode == 100) {
-    moveTetrominoLeft();
+  if (evt.key === 'Escape') {
+    togglePaused();
   }
-  if (evt.key == 'ArrowRight' || evt.keyCode == 102) {
-    moveTetrominoRight();
-  }
-  if (evt.key == 'ArrowDown' || evt.keyCode == 98) {
-    moveTetrominoDown();
-  }
-  if (evt.key == 'ArrowUp' || evt.keyCode == 104) {
-    rotate();
+
+  if (!isPaused) {
+    if (evt.key === ' ' || evt.keyCode === 32) {
+      dropTetrominoDown();
+    }
+    if (evt.key === 'ArrowLeft' || evt.keyCode === 100) {
+      moveTetrominoLeft();
+    }
+    if (evt.key === 'ArrowRight' || evt.keyCode === 102) {
+      moveTetrominoRight();
+    }
+    if (evt.key === 'ArrowDown' || evt.keyCode === 98) {
+      moveTetrominoDown();
+    }
+    if (evt.key === 'ArrowUp' || evt.keyCode === 104) {
+      rotate();
+    }
   }
 
   draw();
@@ -157,6 +187,24 @@ function draw() {
   cells.forEach(elem => elem.removeAttribute('class'));
   drawPlayfield();
   drawTetromino();
+}
+
+function dropTetrominoDown() {
+  while (isValid()) {
+    tetromino.row++;
+  }
+
+  tetromino.row--;
+}
+
+function togglePaused() {
+  if (isPaused) {
+    startLoop();
+  } else {
+    stopLoop();
+  }
+
+  isPaused = !isPaused;
 }
 
 // ROTATE
@@ -265,17 +313,77 @@ function drawPlayfield() {
   }
 }
 
+// SCORE
+
+function countScore(destroyRows) {
+  if (destroyRows == 1) {
+    score += 10;
+  }
+  if (destroyRows == 2) {
+    score += 20;
+  }
+  if (destroyRows == 3) {
+    score += 50;
+  }
+  if (destroyRows == 4) {
+    score += 100;
+  }
+
+  scoreElement.innerHTML = score;
+}
+
 function placeTetromino() {
   const tetrominoMatrixSize = tetromino.matrix.length;
   for (let row = 0; row < tetrominoMatrixSize; row++) {
     for (let column = 0; column < tetrominoMatrixSize; column++) {
+      if (isOutsideOfTopGameboard(row)) {
+        isGameOver = true;
+        overlay.style.display = 'flex';
+        return;
+      }
       if (tetromino.matrix[row][column]) {
         playfield[tetromino.row + row][tetromino.column + column] = tetromino.name;
       }
     }
   };
-  console.log(playfield);
+  // console.log(playfield);
+  let filledRows = findFilledRows();
+  removeFillRow(filledRows);
+  countScore(filledRows.length);
   generateTetromino();
+}
+
+function findFilledRows() {
+  const fillRows = [];
+
+  for (let row = 0; row < PLAYFILED_ROWS; row++) {
+    let filledColumns = 0;
+    for (let column = 0; column < PLAYFILED_COLUMNS; column++) {
+      if (playfield[row][column] != 0) {
+        filledColumns++;
+      }
+    }
+
+    if (PLAYFILED_COLUMNS == filledColumns) {
+      fillRows.push(row);
+    }
+  }
+
+  return fillRows;
+}
+
+function removeFillRow(filledRows) {
+  for (let i = 0; i < filledRows.length; i++) {
+    const row = filledRows[i];
+    dropRowsAbove(row);
+  }
+}
+
+function dropRowsAbove(rowDelete) {
+  for (let row = rowDelete; row > 0; row--) {
+    playfield[row] = playfield[row - 1];
+  }
+  playfield[0] = new Array(PLAYFILED_COLUMNS).fill(0);
 }
 
 // START
@@ -283,11 +391,18 @@ function placeTetromino() {
 function moveDown() {
   moveTetrominoDown();
   draw();
+  stopLoop();
   startLoop();
 }
 
 function startLoop() {
-  setTimeout(() => requestAnimationFrame(moveDown), 700)
+  timedId = setTimeout(() => requestAnimationFrame(moveDown), 700)
+}
+
+function stopLoop() {
+  clearTimeout(timedId);
+
+  timedId = null;
 }
 
 init();
