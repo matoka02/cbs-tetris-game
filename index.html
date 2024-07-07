@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,17 +10,29 @@
     crossorigin="anonymous" referrerpolicy="no-referrer" />
   <link rel="stylesheet" href="./css/styles.css">
 </head>
+
 <body>
   <div class="tetris">
     <!-- <div></div> -->
     <!-- <div></div> -->
     <!-- <div></div> -->
   </div>
-  <div class="score">0</div>
+
+  <div class="header">
+    <div class="title">
+      <div class="score">0</div>
+      <span id="timerid" class="clock">0:00</span>
+    </div>
+    <div class="btn-wrapper">
+      <button type="button" id="restart" class="">Restart</button>
+      <button type="button" id="pause" class="">Pause</button>
+    </div>
+  </div>
 
   <div class="overlay">
-    <button type="button" class="btn-restart">Restart</button>
+    <button type="button" class="btn-restart" id="restartByOwer">Restart</button>
   </div>
   <script src="./js/script.js"></script>
 </body>
+
 </html>
