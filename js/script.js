@@ -10,7 +10,9 @@ let timedId;
 let isGameOver = false;
 let overlay = document.querySelector('.overlay');
 let scoreElement = document.querySelector('.score');
-let btnRestart = document.querySelector('.btn-restart');
+let btnRestartOver = document.querySelector('.btn-restart');
+let btnRestart = document.getElementById('restart');
+let btnPause = document.getElementById('pause');
 let score = 0;
 
 const TETROMINO_NAMES = ['O', 'L', 'J', 'S', 'Z', 'I', 'T', 'P', 'R'];
@@ -65,8 +67,12 @@ let tetromino = {
   name: '',
   matrix: [],
   column: 0,
-  row: 0
+  row: 0,
+  touchdown: false,
 };
+
+let secs, now, timer, mins = 0;
+let timerId = document.getElementById('timerid');
 
 // COMMON
 
@@ -78,6 +84,7 @@ function init() {
   generatePlayfield();
   cells = document.querySelectorAll('.tetris div');
   generateTetromino();
+  startTimer();
 
   moveDown();
 }
@@ -124,14 +131,16 @@ function generatePlayfield() {
 // KEYBOARD & CLICKS
 
 btnRestart.addEventListener('click', onRestart);
+btnRestartOver.addEventListener('click', onRestart);
 
 function onRestart(evt) {
-  document.querySelector('.tetris').innerHTML='';
-  overlay.style.display='none';
+  document.querySelector('.tetris').innerHTML = '';
+  overlay.style.display = 'none';
 
   init();
 };
 
+btnPause.addEventListener('click', togglePaused)
 document.addEventListener('keydown', onKeyDown);
 
 function onKeyDown(evt) {
@@ -199,8 +208,10 @@ function dropTetrominoDown() {
 
 function togglePaused() {
   if (isPaused) {
+    startTimer();
     startLoop();
   } else {
+    stopTimer();
     stopLoop();
   }
 
@@ -385,6 +396,31 @@ function dropRowsAbove(rowDelete) {
   }
   playfield[0] = new Array(PLAYFILED_COLUMNS).fill(0);
 }
+
+// TIMER
+
+function time() {
+  secs = Math.floor((Date.now() - now) / 1000);
+  if (secs === 60) {
+    now = Date.now();
+    mins++;
+  }
+  if (secs < 10) {
+    secs = '0' + secs;
+  }
+  timerId.innerHTML = mins + ':' + secs;
+}
+
+function startTimer() {
+  now = Date.now();
+  mins = 0;
+  timer = setInterval(time);
+}
+
+function stopTimer() {
+  timer = clearInterval(time);
+}
+
 
 // START
 
